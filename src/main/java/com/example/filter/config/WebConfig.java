@@ -12,10 +12,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private OpenApiInterceptor openApiInterceptor;
 
-    public void addInterceptors(InterceptorRegistry registry){
-        registry.addInterceptor(openApiInterceptor)
-                .addPathPatterns("/**")
-
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(openApiInterceptor)
+//        .addPathPatterns("/**")
         ;
+
     }
 }
