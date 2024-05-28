@@ -2,6 +2,9 @@ package com.example.filter.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -18,18 +21,19 @@ public class LoggerFilter implements Filter {
         // 진입전
         log.info(">>>>> 진입 ");
 
-        var req = new HttpServletRequestWrapper((HttpServletRequest) request);
-        var res = new HttpServletResponseWrapper((HttpServletResponse) response);
-
-        var br = req.getReader();
-        var list = br.lines().collect(Collectors.toList());
-        list.forEach(it->{
-            log.info("{}",it);
-        });
-
+        var req = new ContentCachingRequestWrapper((HttpServletRequest) request);
+        var res = new ContentCachingResponseWrapper((HttpServletResponse) response);
         chain.doFilter(req, res);
+        var reqJson = new String(req.getContentAsByteArray());
+        log.info("req : {}", reqJson);
+
+        var resJson = new String(res.getContentAsByteArray());
+        log.info("res : {}", resJson);
+
         log.info("<<<<< 리턴");
         // 진입후
+
+        res.copyBodyToResponse();
 
     }
 }
